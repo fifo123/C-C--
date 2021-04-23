@@ -72,3 +72,47 @@ void inicializa_analise(char *prog)
   tamanho = strlen(codigo);
   pos = 0;
 }
+
+Token *proximo_token(Token *tok)
+{
+  char c;
+  char valor[200];
+  int valorPosicao = 0;
+
+  c = le_caractere();
+
+  while (isspace(c))
+  {
+    c = le_caractere();
+  }
+
+  if (isdigit(c))
+  {
+    tok->tipo = TOK_NUM;
+    valor[valorPosicao++] = c;
+    c = le_caractere();
+    while (isdigit(c))
+    {
+      valor[valorPosicao++] = c;
+      c = le_caractere();
+    }
+    pos--;
+    valor[valorPosicao] = '\0';
+    tok->valor = atoi(valor);
+  }
+  else if (strchr(ops, c) != NULL)
+  {
+    tok->tipo = TOK_OP;
+    tok->valor = operador(c);
+  }
+  else if (c == '(' || c == ')')
+  {
+    tok->tipo = TOK_PONT;
+    tok->valor = (c == '(' ? PAR_E : PAR_D);
+  }
+  else
+  {
+    return NULL;
+  }
+  return tok;
+}
