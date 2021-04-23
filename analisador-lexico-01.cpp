@@ -48,3 +48,21 @@ char le_caractere(void)
 
   return c;
 }
+
+int operador(char c)
+{
+  switch (c)
+  {
+  case '+':
+    return SOMA;
+  case '-':
+    return SUB;
+  case '*':
+    return MULT;
+  case '/':
+    return DIV;
+
+  default:
+    return -1;
+  }
+}
