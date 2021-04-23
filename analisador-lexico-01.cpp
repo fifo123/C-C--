@@ -32,23 +32,21 @@ char *codigo;             // Ponteiro para o código.
 int tamanho;
 int pos;
 
+// Função para ler caractere e retornar seu código, caso não encontre retorna -1.
 char le_caractere(void)
 {
-  char c;
-
   if (pos < tamanho)
   {
-    c = codigo[pos];
     pos++;
+    return codigo[pos];
   }
   else
   {
-    c = -1;
+    return -1;
   }
-
-  return c;
 }
 
+// Função para ler operador e retornar seu código, caso não encontre retorna -1.
 int operador(char c)
 {
   switch (c)
@@ -65,4 +63,12 @@ int operador(char c)
   default:
     return -1;
   }
+}
+
+// Função para iniciar analise.
+void inicializa_analise(char *prog)
+{
+  codigo = prog;
+  tamanho = strlen(codigo);
+  pos = 0;
 }
