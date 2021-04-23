@@ -117,6 +117,12 @@ Token *proximo_token(Token *tok)
   return tok;
 }
 
+void imprime_token(Token *tok)
+{
+  printf("Tipo: %d ", tok->tipo);
+  printf("Valor: %d\n", tok->valor);
+}
+
 int main(void)
 {
   char entrada[200];
@@ -125,7 +131,7 @@ int main(void)
   inicializa_analise(entrada);
   while (proximo_token(&tok) != NULL)
   {
-    //do something
+    imprime_token(&tok);
   }
 
   return 0;
