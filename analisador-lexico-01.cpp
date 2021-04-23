@@ -31,3 +31,20 @@ const char *ops = "+-*/"; // Ponteiro para localizar as operações.
 char *codigo;             // Ponteiro para o código.
 int tamanho;
 int pos;
+
+char le_caractere(void)
+{
+  char c;
+
+  if (pos < tamanho)
+  {
+    c = codigo[pos];
+    pos++;
+  }
+  else
+  {
+    c = -1;
+  }
+
+  return c;
+}
