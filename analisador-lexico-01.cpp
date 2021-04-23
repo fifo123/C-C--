@@ -116,3 +116,17 @@ Token *proximo_token(Token *tok)
   }
   return tok;
 }
+
+int main(void)
+{
+  char entrada[200];
+  Token tok;
+  fgets(entrada, 200, stdin);
+  inicializa_analise(entrada);
+  while (proximo_token(&tok) != NULL)
+  {
+    //do something
+  }
+
+  return 0;
+}
