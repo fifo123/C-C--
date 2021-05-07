@@ -163,17 +163,25 @@ void imprime_token(Token *tok)
 
 int main(void)
 {
-  printf("Analisador Léxico\n");
   char entrada[200];
   Token tok;
-  printf("Expressão: ");
-  fgets(entrada, 200, stdin);
+
+  printf("Analisador Léxico\n");
+
+  printf("Lendo arquivo... ");
+  FILE *ftpr;
+  ftpr = fopen("entrada.txt", "r");
+  fgets(entrada, 200, ftpr);
+
   inicializa_analise(entrada);
+
   printf("\n\nResultado: \n\n");
   while (proximo_token(&tok) != NULL)
   {
     imprime_token(&tok);
   }
+
+  fclose(ftpr);
   printf("\nFim\n");
   return 0;
 }
