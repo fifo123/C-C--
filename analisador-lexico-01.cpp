@@ -35,15 +35,15 @@ int pos;
 // Função para ler caractere e retornar seu código, caso não encontre retorna -1.
 char le_caractere(void)
 {
+  char c;
   if (pos < tamanho)
   {
+    c = codigo[pos];
     pos++;
-    return codigo[pos];
+    return c;
   }
   else
-  {
     return -1;
-  }
 }
 
 // Função para ler operador e retornar seu código, caso não encontre retorna -1.
@@ -62,6 +62,28 @@ int operador(char c)
 
   default:
     return -1;
+  }
+}
+
+// Função para ler código e retornar seu operador, caso não encontre retorna -1.
+char *str_operador(int op)
+{
+  switch (op)
+  {
+  case SOMA:
+    return "+";
+    break;
+  case SUB:
+    return "-";
+    break;
+  case MULT:
+    return "*";
+    break;
+  case DIV:
+    return "/";
+    break;
+  default:
+    return "Erro";
   }
 }
 
@@ -117,22 +139,41 @@ Token *proximo_token(Token *tok)
   return tok;
 }
 
+// Função básica para imprimir no console o tipo e valor do tok.
 void imprime_token(Token *tok)
 {
-  printf("Tipo: %d ", tok->tipo);
-  printf("Valor: %d\n", tok->valor);
+  switch (tok->tipo)
+  {
+  case TOK_NUM:
+    printf("Token Númerico");
+    printf("\t  - Valor: %d\n", tok->valor);
+    break;
+  case TOK_OP:
+    printf("Token de Operação");
+    printf(" - Valor: %s\n", str_operador(tok->valor));
+    break;
+  case TOK_PONT:
+    printf("Token Pontuação");
+    printf("\t  - Valor: %s\n", tok->valor == PAR_E ? "(" : ")");
+    break;
+  default:
+    printf("Token desconhecido");
+  }
 }
 
 int main(void)
 {
+  printf("Analisador Léxico\n");
   char entrada[200];
   Token tok;
+  printf("Expressão: ");
   fgets(entrada, 200, stdin);
   inicializa_analise(entrada);
+  printf("\n\nResultado: \n\n");
   while (proximo_token(&tok) != NULL)
   {
     imprime_token(&tok);
   }
-
+  printf("\nFim\n");
   return 0;
 }
