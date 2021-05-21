@@ -6,11 +6,25 @@
 #include <ctype.h>
 #include <string.h>
 
+// Struct para o Token do analisador léxico.
+// Representa um token.
 typedef struct
 {
   int tipo;
   int valor;
 } Token;
+
+// Struct para Tabela de Símbolos
+// Representa o nó de uma lista encadeada
+struct lista
+{
+  int tipo;   // Token
+  int valor;  // Lexema
+  int linha;  // Linha em que se encontra
+  int coluna; // Coluna em que se encontra
+  struct lista *next;
+};
+typedef struct lista Tabela;
 
 #define TRUE 1  // Verdadeiro.
 #define FALSE 0 // Falso.
@@ -31,6 +45,8 @@ const char *ops = "+-*/"; // Ponteiro para localizar as operações.
 char *codigo;             // Ponteiro para o código.
 int tamanho;
 int pos;
+
+Tabela *t;
 
 // Função para ler caractere e retornar seu código, caso não encontre retorna -1.
 char le_caractere(void)
@@ -95,6 +111,23 @@ void inicializa_analise(char *prog)
   pos = 0;
 }
 
+Tabela *cria(void)
+{
+  return NULL;
+}
+
+// Função para adicionar um novo nó
+Tabela *adiciona(Token *tok, int linha, int coluna)
+{
+  Tabela *no = (Tabela *)(malloc(sizeof(Tabela)));
+  no->tipo = tok->tipo;
+  no->valor = tok->valor;
+  no->linha = linha;
+  no->coluna = coluna;
+  no->next = t;
+  return no;
+}
+
 Token *proximo_token(Token *tok)
 {
   char c;
@@ -136,6 +169,7 @@ Token *proximo_token(Token *tok)
   {
     return NULL;
   }
+  t = adiciona(tok, 2, 3);
   return tok;
 }
 
@@ -161,28 +195,65 @@ void imprime_token(Token *tok, FILE *arquivo)
   }
 }
 
+// Função básica para imprimir em um arquivo a tabela criada.
+void imprime_tabela(FILE *arquivo)
+{
+  Tabela *p;
+  int count = 1;
+  for (p = t; p != NULL; p = p->next)
+  {
+    switch (p->tipo)
+    {
+    case TOK_NUM:
+      fprintf(arquivo, "Endereço %d - Token Numérico", count);
+      fprintf(arquivo, "\t\t  - Lexema: %d", p->valor);
+      fprintf(arquivo, "\t  - Coluna: %d - Linha: %d\n", p->coluna, p->linha);
+      break;
+    case TOK_OP:
+      fprintf(arquivo, "Endereço %d - Token de Operação", count);
+      fprintf(arquivo, "  - Lexema: %s", str_operador(p->valor));
+      fprintf(arquivo, "\t  - Coluna: %d - Linha: %d\n", p->coluna, p->linha);
+      break;
+    case TOK_PONT:
+      fprintf(arquivo, "Endereço %d - Token Pontuação", count);
+      fprintf(arquivo, "\t  - Lexema: %s", p->valor == PAR_E ? "(" : ")");
+      fprintf(arquivo, "\t  - Coluna: %d - Linha: %d\n", p->coluna, p->linha);
+      break;
+    default:
+      fprintf(arquivo, "Token desconhecido");
+    }
+    count++;
+  }
+}
+
 int main(void)
 {
   char entrada[200];
   Token tok;
+  t = cria();
 
   printf("\n\nAnalisador Léxico\n");
 
   printf("Lendo arquivo... ");
   FILE *arquivo_leitura;
-  FILE *arquivo_escrita;
+  FILE *arquivo_saida_analise;
+  FILE *arquivo_saida_tabela;
 
   arquivo_leitura = fopen("entrada.txt", "r");
-  arquivo_escrita = fopen("saida.txt", "w");
+  arquivo_saida_analise = fopen("saida_analise.txt", "w");
+  arquivo_saida_tabela = fopen("saida_tabela.txt", "w");
+
   fgets(entrada, 200, arquivo_leitura);
 
   inicializa_analise(entrada);
 
-  printf("\nEscrevendo arquivo... \n");
+  printf("\nEscrevendo arquivos... \n");
   while (proximo_token(&tok) != NULL)
   {
-    imprime_token(&tok, arquivo_escrita);
+    imprime_token(&tok, arquivo_saida_analise);
   }
+
+  imprime_tabela(arquivo_saida_tabela);
 
   fclose(arquivo_leitura);
   printf("Fim.\n");
