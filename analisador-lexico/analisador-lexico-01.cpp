@@ -139,25 +139,25 @@ Token *proximo_token(Token *tok)
   return tok;
 }
 
-// Função básica para imprimir no console o tipo e valor do tok.
-void imprime_token(Token *tok)
+// Função básica para imprimir em um arquivo o tipo e valor do tok.
+void imprime_token(Token *tok, FILE *arquivo)
 {
   switch (tok->tipo)
   {
   case TOK_NUM:
-    printf("Token Númerico");
-    printf("\t  - Valor: %d\n", tok->valor);
+    fprintf(arquivo, "Token Numérico");
+    fprintf(arquivo, "\t  - Valor: %d\n", tok->valor);
     break;
   case TOK_OP:
-    printf("Token de Operação");
-    printf(" - Valor: %s\n", str_operador(tok->valor));
+    fprintf(arquivo, "Token de Operação");
+    fprintf(arquivo, " - Valor: %s\n", str_operador(tok->valor));
     break;
   case TOK_PONT:
-    printf("Token Pontuação");
-    printf("\t  - Valor: %s\n", tok->valor == PAR_E ? "(" : ")");
+    fprintf(arquivo, "Token Pontuação");
+    fprintf(arquivo, "\t  - Valor: %s\n", tok->valor == PAR_E ? "(" : ")");
     break;
   default:
-    printf("Token desconhecido");
+    fprintf(arquivo, "Token desconhecido");
   }
 }
 
@@ -166,22 +166,25 @@ int main(void)
   char entrada[200];
   Token tok;
 
-  printf("Analisador Léxico\n");
+  printf("\n\nAnalisador Léxico\n");
 
   printf("Lendo arquivo... ");
-  FILE *ftpr;
-  ftpr = fopen("entrada.txt", "r");
-  fgets(entrada, 200, ftpr);
+  FILE *arquivo_leitura;
+  FILE *arquivo_escrita;
+
+  arquivo_leitura = fopen("entrada.txt", "r");
+  arquivo_escrita = fopen("saida.txt", "w");
+  fgets(entrada, 200, arquivo_leitura);
 
   inicializa_analise(entrada);
 
-  printf("\n\nResultado: \n\n");
+  printf("\nEscrevendo arquivo... \n");
   while (proximo_token(&tok) != NULL)
   {
-    imprime_token(&tok);
+    imprime_token(&tok, arquivo_escrita);
   }
 
-  fclose(ftpr);
-  printf("\nFim\n");
+  fclose(arquivo_leitura);
+  printf("Fim.\n");
   return 0;
 }
